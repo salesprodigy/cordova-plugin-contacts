@@ -49,7 +49,9 @@
         region:         "region",
         streetAddress:  "streetAddress",
         title:          "title",
-        urls:           "urls"
+        urls:           "urls",
+        linkedinId:     "linkedinId",
+        linkedinBio:    "linkedinBio"
     };
 
     module.exports = fieldType;

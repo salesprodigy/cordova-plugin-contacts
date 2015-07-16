@@ -118,6 +118,8 @@ public class ContactAccessorSdk5 extends ContactAccessor {
         //dbMap.put("categories.value", null);
         dbMap.put("urls", ContactsContract.CommonDataKinds.Website.URL);
         dbMap.put("urls.value", ContactsContract.CommonDataKinds.Website.URL);
+        dbMap.put("linkedinId", "data1");
+        dbMap.put("linkedinBio", "data3");
     }
 
     /**
@@ -267,7 +269,12 @@ public class ContactAccessorSdk5 extends ContactAccessor {
         if (isRequired("photos", populate)) {
             columnsToFetch.add(ContactsContract.CommonDataKinds.Photo._ID);
         }
-        
+        if (isRequired("linkedinId", populate)){
+            columnsToFetch.add("data1");
+        }
+        if (isRequired("linkedinBio", populate)){
+            columnsToFetch.add("data3");
+        }
         // Do the id query
         Cursor c = mApp.getActivity().getContentResolver().query(ContactsContract.Data.CONTENT_URI,
                 columnsToFetch.toArray(new String[] {}),
@@ -350,6 +357,8 @@ public class ContactAccessorSdk5 extends ContactAccessor {
         int colNickname = c.getColumnIndex(ContactsContract.CommonDataKinds.Nickname.NAME);
         int colBirthday = c.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE);
         int colEventType = c.getColumnIndex(ContactsContract.CommonDataKinds.Event.TYPE);
+        int colLinkedinId = c.getColumnIndex("data1");
+        int colLinkedinBio = c.getColumnIndex("data3");
 
         if (c.getCount() > 0) {
             while (c.moveToNext() && (contacts.length() <= (limit - 1))) {
@@ -397,6 +406,11 @@ public class ContactAccessorSdk5 extends ContactAccessor {
                     
                     if (mimetype.equals(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE) && isRequired("name", populate)) {
                         contact.put("displayName", c.getString(colDisplayName));
+                    }
+
+                    if (mimetype.equalsIgnoreCase("vnd.android.cursor.item/vnd.com.linkedin.android.profile")) {
+                        contact.put("linkedinId", c.getString(colLinkedinId));
+                        contact.put("linkedinBio", c.getString(colLinkedinBio));
                     }
 
                     if (mimetype.equals(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
